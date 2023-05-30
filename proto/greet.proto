@@ -1,0 +1,45 @@
+// this is the file we write everything in 
+// here we define the remote procedure calls that happen b/w the client & the server 
+
+//but the actual code that will be required for those interactions to happen b/w client & server that will be in pb.go file 
+//and those files will be generated for you 
+
+syntax = "proto3";
+option go_package = "./proto"; //you have to get this right ,bcz the files that will get created, will get created in this link 
+
+package greet_service;
+
+//after writing this file i.e greet.proto -> in the terminal we do -
+// protoc --go_out=. --go-grpc_out=. proto/greet.proto
+// as mentioned above there will be 2 files created --go_out (go.pb) and --go-grpc_out (gogrpc.pb)
+// and we want this to be created in the current location i.e proto folder ke ander greet.proto mein 
+
+service Greetservice{
+
+     rpc SayHello(NoParam) returns (HelloResponse);  //unary API (normal jo client-server ka hota hai request-response) -> checkout theory 
+
+     rpc SayHelloServerStreaming(NamesList) returns (stream HelloResponse); //client sends req , server sends back streams 
+
+     rpc SayHelloClientStreaming(stream HelloRequest) returns (MessagesList); //client ab req ni bhejega , client sends a stream, server responds with a simple resopnse .
+
+     rpc SayHelloBidirectionalStreaming(stream HelloRequest) returns (stream HelloResponse);
+}
+
+// definig all messages -> noparam , helloreq , helloresponse
+message NoParam{}; //has nothing , no parameters
+
+message HelloRequest{
+    string name =1;  // hum names bhejenge as a req , toh server ko uss name ke liye msg bhejna hai 
+}
+
+message HelloResponse{
+    string message= 1;   //response ke andar msg hoga 
+}
+
+message NamesList{
+    repeated string names =1 ; //?? //NamesList ke andar names honge bht saare 
+}
+
+message MessagesList{
+    repeated string messages =1 ; //?? //nessagesList ke andar msgs honge bht saare 
+}
